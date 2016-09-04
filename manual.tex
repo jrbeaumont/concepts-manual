@@ -4,6 +4,7 @@
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{amssymb}
 
 \newcommand{\noun}[1]{\textsc{#1}}
 
@@ -299,7 +300,145 @@ If any errors are encountered during the translation process, \noun{Workcraft} w
 the error is, but will ask you to refer to \noun{Workcraft}'s console window for specific line numbers. These errors will include whether a signal has not been declared as an input or output,
 a signal has not had it's initial state given, or even that the concepts tool has not been installed correctly. 
 
-\section{Concepts file layout \label{sec:concepts_layout}}
+\section{Writing concepts \label{sec:concepts_layout}}
+
+In this section, we will discuss how to write a concepts file. We will use an example and go through it based on lines, explaining what is necessary. For this example we will be using the same 
+as example as in previous sections, from the examples included with the concepts repo. This is ``\emph{Celement\_with\_env1.hs}''.
+
+\subsection{Concepts file layout}
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.6]{images/concepts_file_screenshot}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_file}A concepts file}
+
+\par\end{centering}
+
+\end{figure}
+
+The concepts file we will discuss is found in Figure~\ref{fig:concepts_file}. The following describes important information about specific lines.
+
+\begin{description}
+  \item [Line 1] This line must be included in all concept files, as the first line. This ensures that when translating, this is recognised as a concepts file.
+  
+  \item [Line 3] must also remain in all concept files, before any concepts begin to be defined. Importing this module means that the standard operators and existing gates/protocols can be 
+  used. 
+  
+  \item [Line 6] This is the function definintion of the circuit concepts. This must remain named ``\texttt{circuit}'' in order to be translated. ``\emph{(Eq a)}'' must also remain to be translated 
+  correctly. Following this is ``\texttt{a -> }''repeated several times. This needs to be repeated once for each signal in the system. In this example, we have three signals, \texttt{a}, 
+  \texttt{b} and \texttt{c}, and therefore ``\texttt{a -> }'' appears 3 times in this function definintion. Finally for this line, ``\emph{Circuit Concept} \texttt{a}'' must remain at the end. This 
+  is the output of the function and this is what is translated.
+  
+  \item [Line 7] is where a user can begin to define their concepts. ``\texttt{circuit}'' must begin the line, but after this, a user can choose what characters they wish to represent their 
+  signals. In this case, we use \texttt{a}, \texttt{b} and \texttt{c}. Whatever number of signals appear in the system, each one must have a character representation. Following the equals 
+  sign, ``='', we now start defining concepts. Here, any form of concepts can be used; signal-, gate- or protocol-level concepts. Or, a user can define their own concepts below, following 
+  where, and include the names of these concepts here. This can allow for a more concise and easily understood definintion.
+  
+  \item [Line 8] is simply ``\texttt{where}''. This is used to separate the main concept definition from the user-defined concepts. If a concept definition does not need any user defined 
+  concepts, this \texttt{where}, and all following lines can be omitted.
+
+\end{description}
+
+The lines discussed above are the basics of writing concepts. With this information, a user can write concept files, but the following lines can be used for ease-of-use, ease-of-understanding, 
+and reuse. We will some of the following lines in the context of the \emph{Celement\_with\_env1.hs} file, but the information can be applied to any concept files. More information on 
+operators and built-in concepts can be found in Section~\ref{sub:built-in_concepts}.
+
+\begin{description}
+  \item [Line 9] Interface is a concept defined to list the interfaces of the signals, in otherwords, their type. Signals in this can be defined as \emph{inputs} or \emph{outputs}. Every signal
+  must have it's type defined. This can be done using the functions \texttt{inputs[x, y]} and \texttt{outputs[p, q]}. Both of these functions can take a single signal, ``\texttt{[a]}'', or 
+  multiple signals in a comma separated list, ``\texttt{[x, y, z]}''.
+  
+  \item [Line 11] contains a composition of two signal-level concepts. This uses ``\texttt{rise}'' to signify a low-to-high signal transition. ``$\rightsquigarrow$'' signifies causality between two 
+  signal transitions. ``\texttt{<>}'' is the composition operator. This is used to compose any type of concepts. 
+  
+  \item [Line 13] also contains a composition of two signal-level concepts. Some are the same as in Line 11, however, this also features ``\texttt{fall}'', which signifies a high-to-low transition 
+  of the signal this function apllies to, in this case both \texttt{a} and \texttt{b} have included falling transitions.
+  
+  \item [Lines 15 and 17] are further concepts definitions.
+  
+  \item [Line 19] This is the definition of inital states for the signals in this system. This is done by using the ``\texttt{initialise}'' function. This takes a signal, and a Boolean value, and will set 
+  this signal's initial state to 0 if the Boolean value is False, and 1 if the Boolean value is True. This is just one way of defining initial states. 
+
+\end{description}
+
+It is important to note that all defined concepts after Line 8 are part of ``\texttt{circuit}'' definition, on Line 7. These user-defined concepts can be used both within other user-defined 
+concepts, and within the circuit definition to be translated. 
+
+\subsection{Built-in concepts \label{sub:built-in_concepts}}
+
+There are several built-in concepts included in the library, for simple functions, such as setting the initial state, and some standard useful gate- and protocol-level concepts included for ease-
+of-use. We will list the operators and concepts that are built-in to this tool in this section, and discuss their usage. 
+
+\begin{description}
+  \item [\texttt{rise x}] is used in conjunction with a signal, in this example, \texttt{x}. This is used to show a low-to-high (0 -> 1) transition of a signal.
+  
+  \item [\texttt{fall y}] the opposite of rise. Used in conjunction with a signal, \texttt{y} here,  is used to show a high-to-low (1 -> 0) transition of a signal.
+  
+  \item [$\rightsquigarrow$] is used to show \emph{causality}. This is usually used in conjunction with \texttt{rise} and \texttt{fall}, to show that one signal transition, a cause, will occur 
+   before another signal transition, effect. This doesn't force the effect to occur as soon as the cause has occurred, but simply states that the cause will happen before the effect. It does 
+   not suggest timing. One effect signal transition having multiple cause signal transitions creates \emph{AND-causality}. This means that for the effect to occur, both causes must occur. For 
+   example: 
+   \[
+   \texttt{rise a $\rightsquigarrow$ rise c <> rise b $\rightsquigarrow$ rise c}
+   \]
+   will form a concept where both \texttt{rise a} and \texttt{rise b} must occur before \texttt{rise c} can occur.
+   
+   \item [\texttt{<>}] is the composition operator. This is used between two concepts to compose them. To compose several concepts at once, include this operator between all concepts, 
+   but not at the start and end of these concepts. 
+   
+   \item [\texttt{inputs [x, ...]}] This is used to define the interface of the included signal(s) as input. It can be used to set the type of a single signal, ``\texttt{[x]}'', or multiple signals using 
+   a comma separated list, ``\texttt{[a, b, c]}''.
+   
+   \item [\texttt{outputs [y, ...]}] This is used to define the interface of the included signal(s) as output. It can be used to set the type of a single signal, ``\texttt{[y]}'', or multiple signals 
+   using a comma separated list, ``\texttt{[p, q, r]}''.
+   
+   \item [\texttt{internals [z, ...]}] This is used to define the interface of the included signal(s) as internal. It can be used to set the type of a single signal, ``\texttt{[z]}'', or multiple signals 
+   using a comma separated list, ``\texttt{[f, g, h]}''.
+  
+  \item [\texttt{initialise x} \emph{Bool}] is used to set a single signal's initial state. The \emph{Bool}, if True will set the signals initial state to 1, or high. If False, the initial state of the 
+  signal will be 0, or low. 
+
+  \item [\texttt{initialise0 [x, ...]}] sets multiple signals initial states to 0, or low. Passed into this concept can be a single signal, ``\texttt{[x]}'', or several in a comma separated list, 
+  ``\texttt{[a, b, c]}''.
+  
+  \item [\texttt{initialise1 [y, ...]}] sets multiple signals initial states to 1, or high. As with the previous concept, the signals passed in to it can be a single signal, ``\texttt{[y]}'', or several in 
+  a comma separated list, ``\texttt{[p, q, r]}''.
+  
+  \item [\texttt{buffer x y}] is a gate-level concept, used to show that the input signal (\texttt{x} in this case) causes the output to transition in the same way (\texttt{y} in this case). 
+  
+  \item [\texttt{inverter a b}] is a gate-level concept, used to show that the input signal (\texttt{a} in this case) causes the opposite transition in the output signal (\texttt{b} in this case).
+  
+  \item [\texttt{cElement a b c}] is a gate-level concept, with two inputs (\texttt{a} and \texttt{b} in this case) and one output (\texttt{c}). For the output to transition from low-to-high, 
+  both inputs must have transitioned high. For the output to then transition from high-to-low, both input signals must have already transitioned low.
+  
+  \item [\texttt{handshake x y}] is a protocol-level concept. The two signals passed into this protocol form a handshake, where the second signal (\texttt{y} in this case) follows the 
+  transitions of the first signal (\texttt{x} in this case). For example, when \texttt{x} transitions high, \texttt{y} will transition high at some point afterwards. When \texttt{x} transitions low
+  \texttt{y} will transition low if it is not already.
+  
+  \item [\texttt{handshake00 x y}] is another protocol-level concept. The behaviours of the signals are the same as in the standard \texttt{handshake} concepts, but this includes initial 
+  states for the signals. For this concept, both signals will be initialised to 0, or low.
+  
+  \item [\texttt{handshake11 x y}] is another protocol-level concept. The behaviours of the signals are the same as in the standard \texttt{handshake} concepts, but this includes initial 
+  states for the signals. For this concept, both signals will be initialised to 1, or high.
+  
+  \item [\texttt{me a b}] A protocol-level concepts. This concept defines \emph{Mutual Exclusion} between two signals. This means that when one of these signals is high, the other cannot 
+  transition high.
+  
+  \item [\texttt{meElement r1 r2 g1 g2}] is a gate-level concept to apply mutual exclusion. In this case, there are four signals. Two are intputs (\texttt{r1} and \texttt{r2}), the other two 
+  are outputs (\texttt{g1} and \texttt{g2}). \texttt{r1} transitioning high will cause \texttt{g1} to go transition high, and this is the same for \texttt{r2} and \texttt{g2}, however,
+  \texttt{g1} and \texttt{g2} are mutually exclusive. The aim of this concept is to ensure that the request signals, \texttt{r1} and \texttt{r2}, cause their respective grant signals, 
+  \texttt{g1} and \texttt{g2}, to transition high but never at the same time. 
+  
+\end{description}
+
+There are many operators and concepts. With these built-in concepts, we beleive that it is possible to generate STGs of various sizes and complexities using these, and user-defined 
+concepts, however we always aiming to add more standard concepts to the library. Some that are to be added can be found in Section~\ref{sec:to_be_implemented}. Further suggestions
+can be sent to author by email, the address can be found on the title page. 
+
+\section{Features to be implemented \label{sec:to_be_implemented}}
 
 \newpage
 \bibliographystyle{unsrt}
