@@ -1,10 +1,9 @@
 \documentclass{proc}
 
 \usepackage{hyperref}
-\hypersetup{hyperindex=false}
-
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{float}
 
 \newcommand{\noun}[1]{\textsc{#1}}
 
@@ -173,14 +172,16 @@ Any errors that occur during the translation process will produce errors referri
 
 This section will discuss how to use the concepts tool from within \noun{Workcraft}. There are many other features of \noun{Workcraft}, both as part of the STG plug in, some of which I
  will discuss in the context of concepts here, and as part of other modelling formalisms. More information on these can be found at \url{http://workcraft.org/}.
+ 
+ \subsection{Translating and authoring concepts}
 
 First of all, \noun{Workcraft} must be started. This can be done by running the start up script, located in the \noun{Workcraft} directory in \emph{Windows} and \emph{Linux}. In 
-\emph{Windows}, this script is named "\texttt{workcraft.bat}". In \emph{Linux}, it is simply "\texttt{workcraft}". In \emph{OS X}, \noun{Workcraft} can be started instead by double 
+\emph{Windows}, this script is named ``\texttt{workcraft.bat}". In \emph{Linux}, it is simply "\texttt{workcraft}". In \emph{OS X}, \noun{Workcraft} can be started instead by double 
 clicking the \noun{Workcraft} icon, which is the app container for the necessary files. 
 
 When workcraft starts, you will be greeted by blank screen, as seen in Figure~\ref{fig:blank_workcraft_screen}.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{centering}
 \includegraphics[scale=0.2]{images/blank_workcraft_screenshot}
 \par\end{centering}
@@ -192,10 +193,113 @@ When workcraft starts, you will be greeted by blank screen, as seen in Figure~\r
 
 \end{figure}
 
-Now, we need to open a new work, specifically a new STG work. Open the "New work" dialog using the menu bar, \texttt{File -> Create work...}, or by pressing \texttt{Ctrl-N} (\texttt{CMD-N} on \emph{OS X}).
+Now, we need to open a new work, specifically a new STG work. Open the "New work" dialog using the menu bar, \texttt{File -> Create work...}, or by pressing \texttt{Ctrl-N} 
+(\texttt{CMD-N} on \emph{OS X}). This will bring up a menu as seen in Figure~\ref{fig:new_work_screen}.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.4]{images/new_work_screenshot}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:new_work_screen}The create work window.}
+
+\par\end{centering}
+
+\end{figure}
+
+In this window, select ``\emph{Signal Transition Graph}' abd cick the ``OK'' button at the bottom of the window. This will the open a blank workspace in which we can create an STG, which 
+will look similar to Figure~\ref{fig:blank_stg_work}.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.2]{images/new_stg_screenshot}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:blank_stg_work}A new STG workspace}
+
+\par\end{centering}
+
+\end{figure}
+
+Now, we can start translating concepts. To do this, first we need to open the concepts dialog.  This is done from the menu bar, by selecting the ``\emph{Conversion}'' menu, and then the 
+``\emph{Translate concepts...}'' option. The concepts dialog will look as shown in Figure~\ref{fig:concepts_dialog_screenshot}.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.4]{images/concepts_dialog_screenshot}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_dialog_screenshot}The concepts dialog.}
+
+\par\end{centering}
+
+\end{figure}
+
+From within this dialog, one can write their own concepts, from the default template as shown in Figure~\ref{fig:concepts_dialog_screenshot}, or open an existing concepts file, with the  
+\emph{.hs} extension. When satisfied with the concepts written, a user can choose to save the file, if not already saved, and then translate these concepts.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.4]{images/concepts_dialog_Celement}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_dialog_Celement}The concepts dialog with a concept file opened.}
+
+\par\end{centering}
+
+\end{figure}
+
+Figure~\ref{fig:concepts_dialog_Celement} is the concepts dialog after we have opened the Celement with environment example, named ``\emph{Celement\_with\_env1.hs}'', from the 
+concepts tool examples directory. Clicking translate at this point will produce an STG representation of these concepts in the workspace. 
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.2]{images/concepts_translated}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_translated}The STG produced from translating the concepts.}
+
+\par\end{centering}
+
+\end{figure}
+
+The translated concepts will look similar to Figure~\ref{fig:concepts_translated}
+
+Now, a user can choose to insert more concepts, make changes to this STG, and once they are satisfied with it, can then perform various functions on this STG. One can perform 
+transformations, verifications, simulations and synthesis on this STG using the menus within this workspace now. Any further changes to this STG, based on the results of these operations 
+can be made to this STG or to the concepts file. 
+
+\section{Importing concepts directly}
+
+It is also possible to import concepts directly from a file, without having to view the concepts first. This can be done from the ``\emph{File}'' menu, by selecting the ``\emph{Import...}'' 
+option. 
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.4]{images/import_menu_screenshot}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:import_menu_screenshot}The STG produced from translating the concepts.}
+
+\par\end{centering}
+
+\end{figure}
+
+When importing concepts using this menu, ensure to set the ``\emph{Files of Type}'' option to ``\emph{Concepts file (.hs)}'', as shown in Figure~\ref{fig:import_menu_screenshot}
+
+\subsection{Errors}
+
+If any errors are encountered during the translation process, \noun{Workcraft} will produce a helpful error message. This usually can tell you with more detail what the issue that is causing 
+the error is, but will ask you to refer to \noun{Workcraft}'s console window for specific line numbers. These errors will include whether a signal has not been declared as an input or output,
+a signal has not had it's initial state given, or even that the concepts tool has not been installed correctly. 
 
 \section{Concepts file layout \label{sec:concepts_layout}}
-
 
 \newpage
 \bibliographystyle{unsrt}
