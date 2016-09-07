@@ -32,14 +32,14 @@ of which can be found \href{https://github.com/tuura/concepts-article/releases}{
 
 In this document, we will discuss the associated tool for concepts. This open source tool is written in \emph{Haskell}, and contains both the library for concepts, 
 including abstract concepts and circuit concepts built upon the abstract, and a tool for translating concepts into \emph{Signal Transition Graphs}~(STGs)~\cite{Chu_1987_phd}
-\cite{Rosenblum_1985_tpn}. These are commonly used for the specification, verification and synthesis of asynchronous control circuits in the academic community, and they are supported 
-by multiple EDA tools, such as \noun{Petrify}~\cite{Cortadella}, \noun{Mpsat}~\cite{khomenko2004detecting}, \noun{Versify}~\cite{i1997formal},\noun{Workcraft}~
-\cite{2007_poliakov_workcraft}\cite{Workcraft_website}, and others.  The aim of this tool is to design and debug concepts, and then translate them to STGs, where they can be used with
- these tools. 
+\cite{Rosenblum_1985_tpn}. These are commonly used for the specification, verification and synthesis of asynchronous control circuits in the academic community, and 
+they are supported by multiple EDA tools, such as \noun{Petrify}~\cite{Cortadella}, \noun{Mpsat}~\cite{khomenko2004detecting}, \noun{Versify}~\cite{i1997formal}, 
+\noun{Workcraft}~\cite{2007_poliakov_workcraft}\cite{Workcraft_website}, and others.  
+The aim of this tool is to design and debug concepts, and then translate them to STGs, where they can be used with these tools. 
 
-The latest version of this tool, and this manual, can be found \href{https://github.com/tuura/concepts}{in the GitHub repo}. This tool is also distributed as a back-end tool for 
-\noun{Workcraft}. This version of the concepts tool will be the latest version that works correctly with \noun{Workcraft}. The latest version of \noun{Workcraft}, which also features tools 
- such as \noun{Petrify} and \noun{Mpsat}, can be downloaded from \url{http://workcraft.org/}. 
+The latest version of this tool, and this manual, can be found \href{https://github.com/tuura/concepts}{in the GitHub repo}. Any bugs or issues found with the tool can be reported here. 
+This tool is also distributed as a back-end tool for \noun{Workcraft}. This version of the concepts tool will be the latest version that works correctly with \noun{Workcraft}. The latest 
+version of \noun{Workcraft}, which also features tools  such as \noun{Petrify} and \noun{Mpsat}, can be downloaded from \url{http://workcraft.org/}. 
 
 \section{Installation}
 
@@ -435,12 +435,64 @@ in a comma separated list, ``\texttt{[a, b, c]}''.
 \end{description}
 
 There are many operators and concepts. With these built-in concepts, we beleive that it is possible to generate STGs of various sizes and complexities using these, and user-defined 
-concepts, however we always aiming to add more standard concepts to the library. Some that are to be added can be found in Section~\ref{sec:to_be_implemented}. 
-Further suggestions can be sent to author by email, the address can be found on the title page.
+concepts. 
+
+We are always aiming to add more concepts to the library. Some that are to be added can be found in Section~\ref{sec:to_be_implemented}. 
+Further suggestions can be added to \href{https://github.com/tuura/concepts/issues}{the issue list in the github repo}, where these can be discussed.
 
 \section{Features to be implemented \label{sec:to_be_implemented}}
 
-\newpage
+Some features which we aim to be stanard functionality of the concepts tool are not implemented yet for various reasons. 
+These will be displayed here. We will also try and explain a work-around to use until these features are implemented.
+
+Conversations on these features can be found \href{https://github.com/tuura/concepts/issues}{in the list of issues in the github repo}. 
+Any further problems or ideas for features can also be reported here.
+
+\subsection*{Define signal names for translated concepts}
+
+Github issue: \url{https://github.com/tuura/concepts/issues/35}\\
+
+Currently, when concepts are translated, regardless of the names of signals used in the concept definition, the STG translated will have signals, starting at '\texttt{A}' and following the 
+alphabet, only up to the number of signals in the system. For example, a concept containing 5 signals when translated will produce a STG containing signals '\texttt{A}', '\texttt{B}', 
+'\texttt{C}', '\texttt{D}' and '\texttt{E}'. These signals will be in the order of the signals defined in the \texttt{circuit}. For example, if the circuit definition is:
+
+  \[
+  \texttt{circuit x y z = ...}
+  \]
+
+the signals in the translated STG will be '\texttt{A}' in place of '\texttt{x}', '\texttt{B}' in place of '\texttt{y}' and '\texttt{C}' in place of '\texttt{Z}'.  
+The signal names will not affect their type, or the specification in any-way. \\
+
+A work-around for this when used in command line is unfortunatley complicated. 
+The \emph{.g} file output by the tool can be edited, replacing, for example, all '\texttt{A}' signals with the desired signal name.
+If using the tool with \noun{Workcraft}, this becomes somewhat easier. The STG when imported can be manipulated much more easily. 
+The signals can have their names changed by selecting them and changing the property. 
+Signals with the same name can be selected together (\texttt{shift-left mouse button}) and their name can be edited at once. 
+This, however, is still not as simple as the singal names being included in the translation, and we aim to implement this feature soon. 
+
+\subsection*{User-defined concepts to be reused without re-definition}
+
+Github issue: \url{https://github.com/tuura/concepts/issues/36}\\
+
+It is our aim to allow a user to define their own concepts to build a scenario STG, and then re-use the definition of some of their own concepts without having to re-define any of 
+these concepts, to build another scenario STG, or in any other concept definition. 
+
+This feature has not been implemented in this version of the concepts tool. This may require some new form of definition of these concepts, in order to be reused. It may also require the 
+import of a concept file including the original concept definition. When the feature has been implemented, information on how to use this feature will be included in this manual.  \\
+
+A work-around for this is simply to copy-and-paste the previous concept definition into the new concept file which would require this concept. 
+
+\subsection*{OR-causality}
+
+Github issue: \url{https://github.com/tuura/concepts/issues/34}\\
+
+OR-causality is useful for signal interactions where at least one of several signal transitions must occur in order for one other signal transition to occur.  
+With OR-causality, we can then provide some standard gates, such as AND and OR gates. 
+
+OR-causality has yet to be implemented, as it requires some specifics changes when translating. We do aim to implement it in the future. \\
+
+At this point there is no real work-around to include OR-causality to use with this version of the concepts tool.
+
 \bibliographystyle{unsrt}
 \bibliography{manual_references}
 
