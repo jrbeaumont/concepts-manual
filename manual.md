@@ -261,7 +261,7 @@ the app container for the necessary files.
 
 When workcraft starts, you will be greeted by blank screen, as seen here:
 
-![Workcraft immediately after starting.](http://jrbeaumont.github.io/concepts-manual/images/blank_workcraft_screenshot.svg =500x)
+![Workcraft immediately after starting.](http://jrbeaumont.github.io/concepts-manual/images/blank_workcraft_screenshot.svg)
 
 
 Now, we need to open a new work, specifically a new STG work. Open the
