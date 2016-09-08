@@ -261,26 +261,27 @@ the app container for the necessary files.
 
 When workcraft starts, you will be greeted by blank screen, as seen here:
 
-![Workcraft immediately after starting.](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/blank_workcraft_screenshot.pdf =500x)
+![Workcraft immediately after starting.](http://jrbeaumont.github.io/concepts-manual/images/blank_workcraft_screenshot.svg =500x)
+
 
 Now, we need to open a new work, specifically a new STG work. Open the
 “New work” dialog using the menu bar, `File -> Create work...`, or by
 pressing `Ctrl-N` (`CMD-N` on *OS X*). This will bring up a menu as seen here:
 
-![The create work window.](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/new_work_screenshot.pdf =500x)
+![The create work window.](http://jrbeaumont.github.io/concepts-manual/images/new_work_screenshot.svg =500x)
 
 In this window, select “*Signal Transition Graph*’ and cick the “OK”
 button at the bottom of the window. This will the open a blank workspace
 in which we can create an STG, which will look similar this:
 
-![A new STG workspace](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/new_stg_screenshot.pdf =500x)
+![A new STG workspace](http://jrbeaumont.github.io/concepts-manual/images/new_stg_screenshot.svg =500x)
 
 Now, we can start translating concepts. To do this, first we need to
 open the concepts dialog. This is done from the menu bar, by selecting
 the “*Conversion*” menu, and then the “*Translate concepts...*” option.
 The concepts dialog will look as shown here:
 
-![The concepts dialog.](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/concepts_dialog_screenshot.pdf =500x)
+![The concepts dialog.](http://jrbeaumont.github.io/concepts-manual/images/concepts_dialog_screenshot.svg =500x)
 
 From within this dialog, one can write their own concepts, from the
 default template, or open an existing
@@ -288,7 +289,7 @@ concepts file, with the *.hs* extension. When satisfied with the
 concepts written, a user can choose to save the file, if not already
 saved, and then translate these concepts.
 
-![The concepts dialog with a concept file opened.](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/concepts_dialog_Celement.pdf =500x)
+![The concepts dialog with a concept file opened.](http://jrbeaumont.github.io/concepts-manual/images/concepts_dialog_Celement.svg =500x)
 
 This is the concepts dialog after
 we have opened the Celement with environment example, named
@@ -296,7 +297,7 @@ we have opened the Celement with environment example, named
 directory. Clicking translate at this point will produce an STG
 representation of these concepts in the workspace.
 
-![The STG produced from translating the concepts.](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/concepts_translated.pdf =500x)
+![The STG produced from translating the concepts.](http://jrbeaumont.github.io/concepts-manual/images/concepts_translated.svg =500x)
 
 The translated concepts will look similar to in the above image.
 
@@ -315,8 +316,7 @@ it is also possible to import concepts directly from a file, without
 having to view the concepts first. This can be done from the “*File*”
 menu, by selecting the “*Import...*” option.
 
-![The STG produced from translating the concepts.](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/import_menu_screenshot.pdf 
-=500x)
+![The STG produced from translating the concepts.](http://jrbeaumont.github.io/concepts-manual/images/import_menu_screenshot.svg =500x)
 
 When importing concepts using this menu, ensure to set the “*Files of
 Type*” option to “*Concepts file (.hs)*”, as shown in the image above.
@@ -347,7 +347,7 @@ This is “*Celement_with_env_1.hs*”.
 Concepts file layout
 --------------------
 
-![A concepts file](https://blogs.ncl.ac.uk/jrbeaumont/files/2016/09/concepts_file_screenshot.pdf =500x)
+![A concepts file](http://jrbeaumont.github.io/concepts-manual/images/concepts_file_screenshot.svg =500x)
 
 The concepts file we will discuss is found in
 image above. The following describes important
