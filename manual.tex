@@ -5,6 +5,8 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amssymb}
+\usepackage{amsmath}
+
 
 \newcommand{\noun}[1]{\textsc{#1}}
 
@@ -309,7 +311,46 @@ as example as in previous sections, from the examples included with the concepts
 
 \begin{figure}[H]
 \begin{centering}
-\includegraphics[scale=0.6]{images/concepts_file_screenshot}
+
+\begin{flushleft}
+$\,\mathsf{module}\, Concept \, \mathsf{where}$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\mathsf{import}\, Tuura.Concept.STG$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\mathsf{circuit :: (Eq a) =>}\, a \rightarrow a \rightarrow  a \rightarrow  CircuitConcept\,a$\\
+$\,\mathsf{circuit}\,a \,b \,c=\mathsf{\,interface}\,<> \mathsf{\, outputRise}<>\,\mathsf{inputFall}\,<>\,\mathsf{outputFall}<>\mathsf{\, inputRise}\,<>\,\mathsf{initialState}$
+
+$\,\,\,\mathsf{where}$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\,\,\,\,\,\mathsf{interface}=\mathsf{inputs}\,[a,b]<>\mathsf{outputs}\,[c]$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\,\,\,\,\,\mathsf{outputRise}=\mathsf{rise} \,a\rightsquigarrow \mathsf{rise} \,c\,<>\, \mathsf{rise} \,b\rightsquigarrow \mathsf{rise} \,c$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\,\,\,\,\,\mathsf{inputFall}=\mathsf{rise} \,c\rightsquigarrow \mathsf{fall} \,a \,<>\, \mathsf{rise} \,c \rightsquigarrow \mathsf{fall} \,b$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\,\,\,\,\,\mathsf{outputFall}=\mathsf{fall} \,a \rightsquigarrow \mathsf{fall} \,c \,<>\, \mathsf{fall} \,b \rightsquigarrow \mathsf{fall} \,c$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\,\,\,\,\,\mathsf{inputRise}=\mathsf{fall} \,c \rightsquigarrow \mathsf{rise} \,a \,<>\, \mathsf{fall} \,c\rightsquigarrow \mathsf{rise} \,b$
+\par\end{flushleft}
+
+\begin{flushleft}
+$\,\,\,\,\,\mathsf{initialState}= \, \mathsf{initialise}\,a \, False\,<>\,\mathsf{initialise}\,b \,False\,<> \mathsf{initialise}\,c \,False \,$
+\par\end{flushleft}
+
 \par\end{centering}
 
 \begin{centering}
