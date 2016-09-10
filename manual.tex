@@ -321,7 +321,6 @@ $\,\mathsf{import}\, Tuura.Concept.STG$
 \par\end{flushleft}
 
 \begin{flushleft}
-$\,\mathsf{circuit :: (Eq a) =>}\, a \rightarrow a \rightarrow  a \rightarrow  CircuitConcept\,a$\\
 $\,\mathsf{circuit}\,a \,b \,c=\mathsf{\,interface}\,<> \mathsf{\, outputRise}<>\,\mathsf{inputFall}\,<>\,\mathsf{outputFall}<>\mathsf{\, inputRise}\,<>\,\mathsf{initialState}$
 
 $\,\,\,\mathsf{where}$
@@ -348,7 +347,7 @@ $\,\,\,\,\,\,\mathsf{inputRise}=\mathsf{fall} \,c \rightsquigarrow \mathsf{rise}
 \par\end{flushleft}
 
 \begin{flushleft}
-$\,\,\,\,\,\mathsf{initialState}= \, \mathsf{initialise}\,a \, False\,<>\,\mathsf{initialise}\,b \,False\,<> \mathsf{initialise}\,c \,False \,$
+$\,\,\,\,\,\,\mathsf{initialState}= \, \mathsf{initialise}\,a \, False\,<>\,\mathsf{initialise}\,b \,False\,<> \mathsf{initialise}\,c \,False \,$
 \par\end{flushleft}
 
 \par\end{centering}
@@ -363,22 +362,25 @@ $\,\,\,\,\,\mathsf{initialState}= \, \mathsf{initialise}\,a \, False\,<>\,\maths
 The concepts file we will discuss is found in Figure~\ref{fig:concepts_file}. The following describes important information about specific lines.
 
 \begin{description}
-  \item [Line 1] This line must be included in all concept files, as the first line. This ensures that when translating, this is recognised as a concepts file.
+  \item [Line 1]
+  This line must be included in all concept files, as the first line. This ensures that when translating, this is recognised as a concepts file.
   
-  \item [Line 3] must also remain in all concept files, before any concepts begin to be defined. Importing this module means that the standard operators and existing gates/protocols can be 
+  \item [Line 2] must also remain in all concept files, before any concepts begin to be defined. Importing this module means that the standard operators and existing gates/protocols can be 
   used. 
   
-  \item [Line 6] This is the function definintion of the circuit concepts. This must remain named ``\texttt{circuit}'' in order to be translated. ``\emph{(Eq a)}'' must also remain to be translated 
-  correctly. Following this is ``\texttt{a -> }''repeated several times. This needs to be repeated once for each signal in the system. In this example, we have three signals, \texttt{a}, 
-  \texttt{b} and \texttt{c}, and therefore ``\texttt{a -> }'' appears 3 times in this function definintion. Finally for this line, ``\emph{Circuit Concept} \texttt{a}'' must remain at the end. This 
-  is the output of the function and this is what is translated.
+%  \item [Line 6] This is the function definintion of the circuit concepts. This must remain named ``\texttt{circuit}'' in order to be translated. ``\emph{(Eq a)}'' must also remain to be 
+%translated 
+%  correctly. Following this is ``\texttt{a -> }''repeated several times. This needs to be repeated once for each signal in the system. In this example, we have three signals, \texttt{a}, 
+%  \texttt{b} and \texttt{c}, and therefore ``\texttt{a -> }'' appears 3 times in this function definintion. Finally for this line, ``\emph{Circuit Concept} \texttt{a}'' must remain at the end. 
+%This 
+%  is the output of the function and this is what is translated.
   
-  \item [Line 7] is where a user can begin to define their concepts. ``\texttt{circuit}'' must begin the line, but after this, a user can choose what characters they wish to represent their 
+  \item [Line 3] is where a user can begin to define their concepts. ``\texttt{circuit}'' must begin the line, but after this, a user can choose what characters they wish to represent their 
   signals. In this case, we use \texttt{a}, \texttt{b} and \texttt{c}. Whatever number of signals appear in the system, each one must have a character representation. Following the equals 
   sign, ``='', we now start defining concepts. Here, any form of concepts can be used; signal-, gate- or protocol-level concepts. Or, a user can define their own concepts below, following 
   where, and include the names of these concepts here. This can allow for a more concise and easily understood definintion.
   
-  \item [Line 8] is simply ``\texttt{where}''. This is used to separate the main concept definition from the user-defined concepts. If a concept definition does not need any user defined 
+  \item [Line 4] is simply ``\texttt{where}''. This is used to separate the main concept definition from the user-defined concepts. If a concept definition does not need any user defined 
   concepts, this \texttt{where}, and all following lines can be omitted.
 
 \end{description}
@@ -388,19 +390,19 @@ and reuse. We will some of the following lines in the context of the \emph{Celem
 operators and built-in concepts can be found in Section~\ref{sub:built-in_concepts}.
 
 \begin{description}
-  \item [Line 9] Interface is a concept defined to list the interfaces of the signals, in otherwords, their type. Signals in this can be defined as \emph{inputs} or \emph{outputs}. Every signal
+  \item [Line 5] Interface is a concept defined to list the interfaces of the signals, in otherwords, their type. Signals in this can be defined as \emph{inputs} or \emph{outputs}. Every signal
   must have it's type defined. This can be done using the functions \texttt{inputs[x, y]} and \texttt{outputs[p, q]}. Both of these functions can take a single signal, ``\texttt{[a]}'', or 
   multiple signals in a comma separated list, ``\texttt{[x, y, z]}''.
   
-  \item [Line 11] contains a composition of two signal-level concepts. This uses ``\texttt{rise}'' to signify a low-to-high signal transition. ``$\rightsquigarrow$'' signifies causality between two 
+  \item [Line 6] contains a composition of two signal-level concepts. This uses ``\texttt{rise}'' to signify a low-to-high signal transition. ``$\rightsquigarrow$'' signifies causality between two 
   signal transitions. ``\texttt{<>}'' is the composition operator. This is used to compose any type of concepts. 
   
-  \item [Line 13] also contains a composition of two signal-level concepts. Some are the same as in Line 11, however, this also features ``\texttt{fall}'', which signifies a high-to-low transition 
+  \item [Line 7] also contains a composition of two signal-level concepts. Some are the same as in Line 11, however, this also features ``\texttt{fall}'', which signifies a high-to-low transition 
   of the signal this function apllies to, in this case both \texttt{a} and \texttt{b} have included falling transitions.
   
-  \item [Lines 15 and 17] are further concepts definitions.
+  \item [Lines 8 and 9] are further concepts definitions.
   
-  \item [Line 19] This is the definition of inital states for the signals in this system. This is done by using the ``\texttt{initialise}'' function. This takes a signal, and a Boolean value, and will set 
+  \item [Line 10] This is the definition of inital states for the signals in this system. This is done by using the ``\texttt{initialise}'' function. This takes a signal, and a Boolean value, and will set 
   this signal's initial state to 0 if the Boolean value is False, and 1 if the Boolean value is True. This is just one way of defining initial states. 
 
 \end{description}
