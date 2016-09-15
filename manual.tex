@@ -429,6 +429,11 @@ ease-of-use. We will list the operators and concepts that are built-in to this t
    \]
    will form a concept where both \texttt{rise a} and \texttt{rise b} must occur before \texttt{rise c} can occur.
    
+   \item [\texttt{\textasciitilde{}|\textasciitilde{}>}] is used to show \emph{OR causality}. (This is \emph{tilde} ``\texttt{|}'' \emph{tilde} ``\texttt{>}''. Hard to show in LaTeX). Similar to 
+   $\rightsquigarrow$, however the transitions on left side of this arrow can be a list of causes, e.g \texttt{[rise a, rise b]}. The effect transition (on the right of the arrow) must be a single 
+   signal transition. This will imply that only one of the    signal transitions in the cause list must occur in order for the effect to occur. With the previous example, the \texttt{rise a} transition
+    alone can cause the effect. 
+   
    \item [\texttt{<>}] is the composition operator. This is used between two concepts to compose them. To compose several concepts at once, include this operator between all concepts, 
    but not at the start and end of these concepts. 
    
@@ -474,6 +479,12 @@ in a comma separated list, ``\texttt{[a, b, c]}''.
   are outputs (\texttt{g1} and \texttt{g2}). \texttt{r1} transitioning high will cause \texttt{g1} to go transition high, and this is the same for \texttt{r2} and \texttt{g2}, however,
   \texttt{g1} and \texttt{g2} are mutually exclusive. The aim of this concept is to ensure that the request signals, \texttt{r1} and \texttt{r2}, cause their respective grant signals, 
   \texttt{g1} and \texttt{g2}, to transition high but never at the same time. 
+  
+  \item [\texttt{andGate a b c}] is a gate-level concept, using OR-causality to implement a standard AND gate. Signals \texttt{a} and \texttt{b} are inputs to the gate, and \texttt{c} is the 
+  output. Both \texttt{rise a} and \texttt{rise b} must occur for \texttt{rise c} to occur. Following this, either \texttt{fall a} or \texttt{fall b} must occur for \texttt{fall c} to occur.
+  
+  \item [\texttt{orGate a b c}] is a gate-level concept, using OR-causality to implement a standard OR gate. Signals \texttt{a} and \texttt{b} are inputs to the gate, and \texttt{c} is the 
+  output. Either \texttt{rise a} or \texttt{rise b} must occur for \texttt{rise c} to occur. Following this, both \texttt{fall a} and \texttt{fall b} must occur for \texttt{fall c} to occur. 
   
 \end{description}
 
@@ -525,16 +536,18 @@ import of a concept file including the original concept definition. When the fea
 
 A work-around for this is simply to copy-and-paste the previous concept definition into the new concept file which would require this concept. 
 
-\subsection*{OR-causality}
+\newpage
 
-Github issue: \url{https://github.com/tuura/concepts/issues/34}\\
-
-OR-causality is useful for signal interactions where at least one of several signal transitions must occur in order for one other signal transition to occur.  
-With OR-causality, we can then provide some standard gates, such as AND and OR gates. 
-
-OR-causality has yet to be implemented, as it requires some specifics changes when translating. We do aim to implement it in the future. \\
-
-At this point there is no real work-around to include OR-causality to use with this version of the concepts tool.
+%\subsection*{OR-causality}
+%
+%Github issue: \url{https://github.com/tuura/concepts/issues/34}\\
+%
+%OR-causality is useful for signal interactions where at least one of several signal transitions must occur in order for one other signal transition to occur.  
+%With OR-causality, we can then provide some standard gates, such as AND and OR gates. 
+%
+%OR-causality has yet to be implemented, as it requires some specifics changes when translating. We do aim to implement it in the future. \\
+%
+%At this point there is no real work-around to include OR-causality to use with this version of the concepts tool.
 
 \bibliographystyle{unsrt}
 \bibliography{manual_references}
