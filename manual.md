@@ -1,4 +1,4 @@
-﻿#Concepts Manual	
+﻿#Concepts Manual
 
 
 Introduction
@@ -54,7 +54,7 @@ Installation
 
 The concepts tool, as well as <span><span
 style="font-variant:small-caps;">Workcraft</span></span> are available
-for *Windows*, *Linux* and *Mac OS X*. The installation instructions for
+for *Windows*, *Linux* and *macOS*. The installation instructions for
 all of these operating systems are the same. We will be referring to
 directories using the
 forward-slash character (’/’) as a separator, however for *Windows*,
@@ -75,7 +75,7 @@ Concepts tool requirements
 The concepts tool is written in *Haskell*, and uses *Stack* to install
 the necessary compiler and dependencies. If necessary, please download
 stack for your operating system, available from
-<https://haskell.org/downloads#stack>, and follow the instructions to
+<https://docs.haskellstack.org/en/stable/install_and_upgrade/>, and follow the instructions to
 install this.
 
 Workcraft requirements
@@ -113,7 +113,7 @@ you aim to use the concepts tool. First of all, let’s setup stack. To do
 this, run:
 
 ```
-  $ stack setup
+  $ stack setup --no-system-ghc
 ```
 
 This will prepare stack to install the concepts tool. Now, to build and
@@ -484,18 +484,18 @@ simply states that the cause will happen before the effect. It does
 not suggest timing. One effect signal transition having multiple
 cause signal transitions creates *AND-causality*. This means that
 for the effect to occur, both causes must occur. For example:
-`rise a ~> rise c <> rise b ~> rise c` 
+`rise a ~> rise c <> rise b ~> rise c`
 will form a concept where both `rise a` and `rise b` must occur
 before `rise c` can occur.
 
 `~|~>`
 
-This is used to show \emph{OR causality}. Similar to `~>`, however the 
-transitions on left side of this arrow can be a list of causes, 
+This is used to show \emph{OR causality}. Similar to `~>`, however the
+transitions on left side of this arrow can be a list of causes,
 e.g `[rise a, rise b]`. The effect transition (on the right of the arrow)
 must be a single signal transition. This will imply that only one of the
-signal transitions in the cause list must occur in order for the effect 
-to occur. With the previous example, the `rise a` transition alone can cause the effect. 
+signal transitions in the cause list must occur in order for the effect
+to occur. With the previous example, the `rise a` transition alone can cause the effect.
 
 `<>`
 
@@ -606,20 +606,20 @@ but never at the same time.
 
 `andGate a b c`
 
-This is a gate-level concept, using OR-causality to implement a 
-standard AND gate. Signals `a` and `b`are inputs to the gate, 
+This is a gate-level concept, using OR-causality to implement a
+standard AND gate. Signals `a` and `b`are inputs to the gate,
 and `c` is the output. Both `rise a` and `rise b` must occur for
-`rise c` to occur. Following this, either `fall a` or `fall b` must 
+`rise c` to occur. Following this, either `fall a` or `fall b` must
 occur for `fall c` to occur.
-  
+
 `orGate a b c`
 
-This is a gate-level concept, using OR-causality to implement a 
-standard OR gate. Signals `a` and `b` are inputs to the gate, and 
-`c` is the output. Either `rise a` or `rise b` must occur for 
-`rise c` to occur. Following this, both `fall a`and `fall b` must 
-occur for `fall c` to occur. 
-  
+This is a gate-level concept, using OR-causality to implement a
+standard OR gate. Signals `a` and `b` are inputs to the gate, and
+`c` is the output. Either `rise a` or `rise b` must occur for
+`rise c` to occur. Following this, both `fall a`and `fall b` must
+occur for `fall c` to occur.
+
 
 There are many operators and concepts. With these built-in concepts, we
 beleive that it is possible to generate STGs of various sizes and

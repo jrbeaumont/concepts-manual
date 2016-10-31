@@ -45,7 +45,7 @@ version of \noun{Workcraft}, which also features tools  such as \noun{Petrify} a
 
 \section{Installation}
 
-The concepts tool, as well as \noun{Workcraft} are available for \emph{Windows}, \emph{Linux} and \emph{Mac OS X}. The installation instructions for all of these operating systems are 
+The concepts tool, as well as \noun{Workcraft} are available for \emph{Windows}, \emph{Linux} and \emph{macOS}. The installation instructions for all of these operating systems are 
 the same. We will be referring to directories using the \\forward-slash character ('/') as a separator, however for \emph{Windows}, replace this with a back-slash character 
 ('\textbackslash').
 
@@ -56,7 +56,7 @@ downloaded from the \href{https://github.com/tuura/concepts}{GitHub repo}. If yo
 \subsection{Concepts tool requirements\label{sub:Concepts_requirements}}
 
 The concepts tool is written in \emph{Haskell}, and uses \emph{Stack} to install the necessary compiler and dependencies. If necessary, please download stack for your operating 
-system, available from \url{https://haskell.org/downloads#stack}, and follow the instructions to install this.
+system, available from \\\url{https://docs.haskellstack.org/en/stable/install_and_upgrade/} and follow the instructions to install this.
 
 \subsection{Workcraft requirements}
 
@@ -76,7 +76,7 @@ Once either the concepts tool or \noun{Workcraft} has been extracted and moved t
 Now, the process of installing the tool is the same, regardless of how you aim to use the concepts tool. First of all, let's setup stack. To do this, run: 
 
 \begin{lstlisting}[language=bash]
-  $ stack setup
+  $ stack setup --no-system-ghc
 \end{lstlisting}
 
 This will prepare stack to install the concepts tool. Now, to build and install the concepts tool, simply run:
