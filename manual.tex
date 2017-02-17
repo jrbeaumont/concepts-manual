@@ -1,28 +1,29 @@
-\documentclass{proc}
-
+\documentclass[british,technote,compsoc]{IEEEtran}
+\usepackage[T1]{fontenc}
 \usepackage{hyperref}
-\usepackage{listings}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amssymb}
-\usepackage{amsmath}
-
+\usepackage{blindtext}
+\usepackage{setspace}
+\usepackage{minted}
+\usepackage{enumitem}
 
 \newcommand{\noun}[1]{\textsc{#1}}
 
 \begin{document}
-
-\title{Concepts tool - Manual}
+\onecolumn
+\title{Plato - Manual}
 \author{Jonathan Beaumont\\
 \texttt{j.r.beaumont@ncl.ac.uk}\\
-\emph{School of Electrical and Electronic Engineering, Newcastle University,UK}\\\\
+\emph{School of Electrical and Electronic Engineering, Newcastle University,UK}\\
 Last updated \today}
 
 \maketitle
 
 \tableofcontents
 
-\onecolumn
+\newpage
 
 \section{Introduction}
 
@@ -32,30 +33,30 @@ any other method a user decides. These can be specified separately, using concep
  allowing concepts to be reused between scenarios and even entire designs. More information on the theory of concepts can be found in~\cite{2016_beaumont_concepts}, the latest version 
 of which can be found \href{https://github.com/tuura/concepts-article/releases}{here}.
 
-In this document, we will discuss the associated tool for concepts. This open source tool is written in \emph{Haskell}, and contains both the library for concepts, 
+In this document, we will discuss the associated tool for concepts, \noun{Plato}. This open source tool is written in \emph{Haskell}, and contains both the library for concepts, 
 including abstract concepts and circuit concepts built upon the abstract, and a tool for translating concepts into \emph{Signal Transition Graphs}~(STGs)~\cite{Chu_1987_phd}
-\cite{Rosenblum_1985_tpn}. These are commonly used for the specification, verification and synthesis of asynchronous control circuits in the academic community, and 
+\cite{Rosenblum_1985_tpn}, and \emph{Finite State Machines}~(FSMs). These are commonly used for the specification, verification and synthesis of asynchronous control circuits in the academic community, and 
 they are supported by multiple EDA tools, such as \noun{Petrify}~\cite{Cortadella}, \noun{Mpsat}~\cite{khomenko2004detecting}, \noun{Versify}~\cite{i1997formal}, 
 \noun{Workcraft}~\cite{2007_poliakov_workcraft}\cite{Workcraft_website}, and others.  
-The aim of this tool is to design and debug concepts, and then translate them to STGs, where they can be used with these tools. 
+The aim of this tool is to design and debug concepts, and then translate them to STGs or FSMs based on the users preferences, where they can be used with these tools. 
 
-The latest version of this tool, and this manual, can be found \href{https://github.com/tuura/concepts}{in the GitHub repo}. Any bugs or issues found with the tool can be reported here. 
-This tool is also distributed as a back-end tool for \noun{Workcraft}. This version of the concepts tool will be the latest version that works correctly with \noun{Workcraft}. The latest 
+The latest version of this tool, and this manual, can be found \href{https://github.com/tuura/plato}{in the GitHub repo}. Any bugs or issues found with the tool can be reported here. 
+This tool is also distributed as a back-end tool for \noun{Workcraft}. This version of \noun{Plato} will be the latest version that works correctly with \noun{Workcraft}. The latest 
 version of \noun{Workcraft}, which also features tools  such as \noun{Petrify} and \noun{Mpsat}, can be downloaded from \url{http://workcraft.org/}. 
 
 \section{Installation}
 
-The concepts tool, as well as \noun{Workcraft} are available for \emph{Windows}, \emph{Linux} and \emph{macOS}. The installation instructions for all of these operating systems are 
-the same. We will be referring to directories using the \\forward-slash character ('/') as a separator, however for \emph{Windows}, replace this with a back-slash character 
+\noun{Plato}, as well as \noun{Workcraft} are available for \emph{Windows}, \emph{Linux} and \emph{macOS}. The installation instructions for all of these operating systems are 
+the same. We will be referring to directories using the forward-slash character ('/') as a separator, however for \emph{Windows}, replace this with a back-slash character 
 ('\textbackslash').
 
-If choosing to use the concepts tool on its own, this must be 
-downloaded from the \href{https://github.com/tuura/concepts}{GitHub repo}. If you choose to use this tool as part of \noun{Workcraft}, download this from the 
+If choosing to use \noun{plato} on its own, this must be 
+downloaded from the \href{https://github.com/tuura/plato}{GitHub repo}. If you choose to use this tool as part of \noun{Workcraft}, download this from the 
 \href{http://workcraft.org/}{\noun{Workcraft} website}. Once downloaded, extract the contents of the folder, and move them to a directory you wish to run them from. 
 
-\subsection{Concepts tool requirements\label{sub:Concepts_requirements}}
+\subsection{\noun{Plato} requirements\label{sub:Concepts_requirements}}
 
-The concepts tool is written in \emph{Haskell}, and uses \emph{Stack} to install the necessary compiler and dependencies. If necessary, please download stack for your operating 
+\noun{Plato} is written in \emph{Haskell}, and uses \emph{Stack} to install the necessary compiler and dependencies. If necessary, please download stack for your operating 
 system, available from \\\url{https://docs.haskellstack.org/en/stable/install_and_upgrade/} and follow the instructions to install this.
 
 \subsection{Workcraft requirements}
@@ -63,29 +64,115 @@ system, available from \\\url{https://docs.haskellstack.org/en/stable/install_an
 \noun{Workcraft} is written in Java, and the latest version of the \emph{Java Runtime Environment}~(JRE) needs to be installed to run.  This can be downloaded from 
 \url{http://java.com/en/download/}. If needed, download the JRE installer, and follow the instructions to install this.
 
-While the concepts tool is distributed with \noun{Workcraft}, it still needs to be built by \emph{stack} in order for it to be run. 
-See Section~\ref{sub:Concepts_requirements} for requirements for the concepts tool.
+While \noun{Plato} is distributed with \noun{Workcraft}, it still needs to be built by \emph{stack} in order for it to be run. 
+See Section~\ref{sub:Concepts_requirements} for requirements for \noun{Plato}.
 
 \newpage
 \subsection{Installing the tool}
 
-Once either the concepts tool or \noun{Workcraft} has been extracted and moved to the desired directory, using command line, navigate to the concepts tool directory, or if using 
-\noun{Workcraft}, navigate to the \noun{Workcraft} directory, and then navigate to the concepts tool directory, found in \texttt{tools/concepts} (for \emph{OS X}, the 
-\noun{Workcraft} directory is located within the \texttt{Workcraft.app} contents folder. The concepts tool will be found at \texttt{Contents/Resources/tools/concepts}.
+Once either \noun{Plato} or \noun{Workcraft} has been extracted and moved to the desired directory, using command line, navigate to the \noun{Plato} directory, or if using 
+\noun{Workcraft}, navigate to the \noun{Workcraft} directory, and then navigate to the \noun{Plato} directory, found in \texttt{tools/plato} (for \emph{OS X}, the 
+\noun{Workcraft} directory is located within the \texttt{Workcraft.app} contents folder. \noun{Plato} will be found at \texttt{Contents/Resources/tools/plato}).
 
-Now, the process of installing the tool is the same, regardless of how you aim to use the concepts tool. First of all, let's setup stack. To do this, run: 
+Now, the process of installing the tool is the same, regardless of how you aim to use \noun{Plato}. First of all, let's setup stack. To do this, run: 
 
-\begin{lstlisting}[language=bash]
-  $ stack setup --no-system-ghc
-\end{lstlisting}
+\begin{minted}[fontsize=\normalsize]{bash}
+    $ stack setup --no-system-ghc
+\end{minted}
 
-This will prepare stack to install the concepts tool. Now, to build and install the concepts tool, simply run:
+\noindent This will prepare stack to install \noun{Plato}. Now, to build and install \noun{Plato}, simply run:
 
-\begin{lstlisting}[language=bash]
-  $ stack build
-\end{lstlisting}
+\begin{minted}[fontsize=\normalsize]{bash}
+    $ stack build
+\end{minted}
 
-If this process completes successfully, the tool will now be installed and ready to be used.
+\noindent If this process completes successfully, the tool will now be installed and ready to be used. 
+
+\section{Writing concepts \label{sec:concepts_layout}}
+
+In this section, we will discuss how to write a concepts file. 
+We will use an example and go through it based on lines, explaining what is necessary. For this example we will be using the same 
+as example as in previous sections, from the examples included with the concepts repo. This is ``\emph{Celement\_with\_env1.hs}''.
+
+\subsection{Concepts file layout}
+
+\begin{figure}[H]
+\begin{centering}
+
+\begin{minted}[fontsize=\normalsize]{haskell}
+module Concept where
+
+import Tuura.Concept.STG
+
+-- C-element with environment circuit described using signal-level concepts
+circuit a b c = interface <> outputRise <> inputFall <> outputFall <> inputRise <> initialState
+  where
+    interface = inputs [a, b] <> outputs [c]
+
+    outputRise = rise a ~> rise c <> rise b ~> rise c
+
+    inputFall = rise c ~> fall a <> rise c ~> fall b
+
+    outputFall = fall a ~> fall c <> fall b ~> fall c
+
+    inputRise = fall c ~> rise a <> fall c ~> rise b
+
+    initialState = initialise a False <> initialise b False <> initialise c False
+\end{minted}
+
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_file}A concepts file}
+
+\par\end{centering}
+
+\end{figure}
+
+The concepts file we will discuss is found in Figure~\ref{fig:concepts_file}. The following describes important information about specific lines.
+
+\begin{description}
+  \item [Line 1]
+  This line must be included in all concept files, as the first line. This ensures that when translating, this is recognised as a concepts file.
+  
+  \item [Line 2] must also remain in all concept files, before any concepts begin to be defined. 
+                       Importing this module means that the standard operators and existing gates/protocols can be used for STG translation.
+                       If translating from a concept specification to an FSM, this needs to be changed to \texttt{Tuura.Concept.FSM}
+  
+  \item [Line 3] is where a user can begin to define their concepts. ``\texttt{circuit}'' must begin the line, but after this, a user can choose what characters they wish to represent their 
+  signals. In this case, we use \texttt{a}, \texttt{b} and \texttt{c}. Whatever number of signals appear in the system, each one must have a character representation. Following the equals 
+  sign, ``='', we now start defining concepts. Here, any form of concepts can be used; signal-, gate- or protocol-level concepts. Or, a user can define their own concepts below, following 
+  where, and include the names of these concepts here. This can allow for a more concise and easily understood definintion.
+  
+  \item [Line 4] is simply ``\texttt{where}''. This is used to separate the main concept definition from the user-defined concepts. If a concept definition does not need any user defined 
+  concepts, this \texttt{where}, and all following lines can be omitted.
+
+\end{description}
+
+\noindent The lines discussed above are the basics of writing concepts. With this information, a user can write concept files, but the following lines can be used for ease-of-use, ease-of-understanding, 
+and reuse. We will some of the following lines in the context of the \emph{Celement\_with\_env1.hs} file, but the information can be applied to any concept files. More information on 
+operators and built-in concepts can be found in Section~\ref{sub:built-in_concepts}.
+
+\begin{description}
+  \item [Line 5] Interface is a concept defined to list the interfaces of the signals, in otherwords, their type. Signals in this can be defined as \emph{inputs} or \emph{outputs}. Every signal
+  must have it's type defined. This can be done using the functions \texttt{inputs[x, y]} and \texttt{outputs[p, q]}. Both of these functions can take a single signal, ``\texttt{[a]}'', or 
+  multiple signals in a comma separated list, ``\texttt{[x, y, z]}''.
+  
+  \item [Line 6] contains a composition of two signal-level concepts. This uses ``\texttt{rise}'' to signify a low-to-high signal transition. ``$\rightsquigarrow$'' signifies causality between two 
+  signal transitions. ``\texttt{<>}'' is the composition operator. This is used to compose any type of concepts. 
+  
+  \item [Line 7] also contains a composition of two signal-level concepts. Some are the same as in Line 11, however, this also features ``\texttt{fall}'', which signifies a high-to-low transition 
+  of the signal this function apllies to, in this case both \texttt{a} and \texttt{b} have included falling transitions.
+  
+  \item [Lines 8-9] \hspace{1mm} are further concepts definitions.
+  
+  \item [Line 10] This is the definition of inital states for the signals in this system. This is done by using the ``\texttt{initialise}'' function. This takes a signal, and a Boolean value, and will set 
+  this signal's initial state to 0 if the Boolean value is False, and 1 if the Boolean value is True. This is just one way of defining initial states. 
+
+\end{description}
+
+It is important to note that all defined concepts after Line 8 are part of ``\texttt{circuit}'' definition, on Line 7. These user-defined concepts can be used both within other user-defined 
+concepts, and within the circuit definition to be translated. 
 
 \section{Using the tool from command line}
 
@@ -94,35 +181,41 @@ With the tool installed, we can now start to use it to translate concepts to STG
 
 The standard command for the tool is as follows:
 
-\begin{lstlisting}[language=bash]
-  $ stack runghc <path-to-translate> <path-to-concepts-file> 
-                                           [--stack-yaml <path-to-stack-file>]
-\end{lstlisting}
+\begin{minted}[fontsize=\normalsize]{bash}
+  $ stack runghc <path-to-translate> [--stack-yaml <path-to-stack-file>] 
+  		-- <path-to-concepts-file> [--include/-i] [OPTIONS...]
+                                           
+\end{minted}
 
 The three parts of this are as follows:
 \begin{itemize}
   \item \texttt{stack} - This will ensure that the dependencies and compiler are installed when running.
   \item \texttt{runghc} - This runs the translation function.
   \item \texttt{<path-to-translate>} - This is file path pointing to the translate code file, which performs the necessary operations to translate concepts to STGs.
-  \item \texttt{<path-to-concepts-file>} - This is the path pointing to the file containing the concepts to be translated.
   \item \texttt{[--stack-yaml <path-to-stack-file>]} - This is optional. If running the tool from outside of the directory, the path to the stack file needs to be given.
+  \item \texttt{<path-to-concepts-file>} - This is the path pointing to the file containing the concepts to be translated.
+  \item \texttt{[--include/-i]} - This is used to include other concept files which the concept file to translate imports, to use concepts specified in outside concepts files.
+  \item \texttt{[OPTIONS]} - This is for some optional commands, \texttt{--fsm/-f} will translate the concept specification to an FSM, or \texttt{--help/-h} for a help message. Without any 
+  				   options, the tool will translate a specification to an STG automatically. 
 \end{itemize}
 
-When running the concepts tool from command line, as long as the paths to the translate code, the concepts
+When running \noun{Plato} from command line, as long as the paths to the translate code, the concepts
 file and the \texttt{stack.yaml} file are correct, it doesn't matter which directory the tool is run from.  The \texttt{stack.yaml} file is located in the base of the concepts directory.
 
-Now, let's use one of the examples included with the concepts tool to show the usage. These can be found in the \texttt{examples} directory of the concepts tool. 
-For this section, we will assume that we are currently in the concepts tool directory. The example we will use is the file titled "\texttt{Celement\_with\_env\_1.hs}". 
+\subsection{Basic usage \label{sub:basic}}
+
+Now, let's use one of the examples included with \noun{Plato} to show the basic usage. These can be found in the \texttt{examples} directory of \noun{Plato}. 
+For this section, we will assume that we are currently in the \noun{Plato} directory. The example we will use is the file titled "\texttt{Celement\_with\_env\_1.hs}". 
 This has the ".hs" file extension, as it is in fact a file using Haskell code, and all files containing concepts should feature this file extension. 
 To translate this concepts file to an STG, the following command must be run:
 
-\begin{lstlisting}[language=bash]
-  $ stack runghc translate/Main.hs examples/Celement_with_env_1.hs
-\end{lstlisting}
+\begin{minted}[fontsize=\normalsize]{bash}
+  $ stack runghc translate/Main.hs -- examples/Celement_with_env_1.hs
+\end{minted}
 
 When the translation is complete, the tool will output the following:
 
-\begin{lstlisting}[language=bash]
+\begin{minted}[fontsize=\normalsize]{bash}
   .model out
   .inputs A B
   .outputs C
@@ -158,19 +251,181 @@ When the translation is complete, the tool will output the following:
   B+ C0
   .marking {A0 B0 C0}
   .end
-\end{lstlisting}
+\end{minted}
 
 This output is the STG representation in \emph{.g} format. \emph{.g} files are a standard type used as input to tools, such as \noun{Petrify}, \noun{Mpsat}, and \noun{Workcraft}. 
 Therefore, this output can by copy-and-pasted into a file, and saved with the file etension \emph{.g}, and then used as input to these tools. 
 
-The concepts tool can be used in a similar way, ensuring that the file paths to the translate code file, and the concepts input file, are correct. Section~\ref{sec:concepts_layout} contains 
+\noun{Plato} can be used in a similar way, ensuring that the file paths to the translate code file, and the concepts input file, are correct. Section~\ref{sec:concepts_layout} contains 
 information on how to layout a concepts file, to avoid as many errors as possible. 
 
 Any errors that occur during the translation process will produce errors referring to the problematic lines of signals of the concepts that are problematic. 
 
+\subsection{Concept to FSM translation}
+
+Here we will show an example of a concept specification written for translation to FSM. Concepts used to translate to STG and FSM are currently very similar,
+but behind-the-scenes, this provides different information for the translation tool. 
+
+Using the same example as before, a C-element with environment, let's re-write it in a different way, which will still produce the same result, this time for FSM translation.
+
+\begin{figure}[H]
+\begin{centering}
+
+\begin{minted}[fontsize=\normalsize]{haskell}
+module Concept where
+
+import Tuura.Concept.FSM
+
+-- C-element with environment circuit described using gate-level concepts
+circuit a b c = interface <> cElement a b c <> environment <> initialState
+  where
+    interface = inputs [a, b] <> outputs [c]
+
+    environment = inverter c a <> inverter c b
+
+    initialState = initialise a False <> initialise b False <> initialise c False
+\end{minted}
+
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_file}An FSM concept specification}
+
+\par\end{centering}
+
+\end{figure}
+
+Notice that line two now imports \texttt{Tuura.Concepts.FSM}, ensuring that it uses the correct concepts for a correct Finite State Machine translation.
+
+This is a minor edit of the example file provided with \noun{Plato}, ``\emph{Celement\_with\_env2.hs}'', which we have renamed for this purpose 
+``\emph{Celement\_with\_env\_FSM.hs}''.
+The command to translate this is:
+
+\begin{minted}[fontsize=\normalsize]{bash}
+  $ stack runghc translate/Main.hs -- examples/Celement_with_env_FSM.hs -f
+\end{minted}
+
+The FSM translation will produce the following output:
+
+\begin{minted}[fontsize=\normalsize]{bash}
+.inputs A B
+.outputs C
+.internals
+.state graph
+s7 A- s6
+s5 A- s4
+s2 A+ s3
+s0 A+ s1
+s7 B- s5
+s6 B- s4
+s1 B+ s3
+s0 B+ s2
+s4 C- s0
+s3 C+ s7
+.marking {s0}
+.end
+\end{minted}
+
+This produces an FSM in the \emph{.sg} format. Similar to the STG \emph{.g} format, this can be copy-and-pasted into a file and saved with this \emph{.sg} and used as an input to various
+tools, including \noun{Workcraft}.
+
+Again, any errors that occur during the translation process will produce errors referring to the problematic lines of signals of the concepts that are problematic. 
+
+\subsection{Including imported concept files\label{sub:includes}}
+
+If one or more concept has been defined in one concept specification, which can be reused in another concept specification, rather than redefine this, we can
+import the file with this concept previously defined. For example, using the example files we have provided for a buck controller, nameley ``\emph{ZCAbsent.hs}'' and ``\emph{ZCEarly.hs}''. 
+We can rewrite \texttt{zcAbsent} as:
+
+\begin{figure}[H]
+\begin{centering}
+
+\begin{minted}[fontsize=\normalsize]{haskell}
+module ZCAbsent where
+
+import Tuura.Concept.STG
+
+--ZC absent scenario definition using concepts
+circuit uv oc zc gp gp_ack gn gn_ack = chargeFunc uv oc zc gp gp_ack gn gn_ack
+                                       <> uvFunc <> uvReact
+  where
+    uvFunc = rise uv ~> rise gp <> rise uv ~> fall gn
+
+    uvReact = rise gp_ack ~> fall uv <> fall gn_ack ~> fall uv
+
+chargeFunc uv oc zc gp gp_ack gn gn_ack = interface <> ocFunc <> ocReact
+                <> environmentConstraint <> noShortcircuit <> gpHandshake
+                <> gnHandshake <> initialState
+    where
+        interface = inputs [uv, oc, zc, gp_ack, gn_ack] <> outputs [gp, gn]
+        ocFunc = rise oc ~> fall gp <> rise oc ~> rise gn
+        ocReact = fall gp_ack ~> fall oc <> rise gn_ack ~> fall oc
+        environmentConstraint = me uv oc
+        noShortcircuit = me gp gn <> fall gn_ack ~> rise gp <> fall gp_ack ~> rise gn
+        gpHandshake = handshake gp gp_ack
+        gnHandshake = handshake gn gn_ack
+        initialState = initialise0 [uv, oc, zc, gp, gp_ack] <> initialise1 [gn, gn_ack]
+
+\end{minted}
+
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_file}ZCAbsent concept specification}
+
+\par\end{centering}
+
+\end{figure}
+
+This specification can be translated to an STG and FSM as with any other concept specification. 
+
+\texttt{chargeFunc} features several concepts which can be reused in \texttt{ZCEarly}, and as such we can import the \texttt{ZCAbsent} file to reuse this \texttt{chargeFunc} concepts,
+without specifying it again. This file can be written as follows:
+
+\begin{figure}[H]
+\begin{centering}
+
+\begin{minted}[fontsize=\normalsize]{haskell}
+module ZCEarly where
+
+import Tuura.Concept.STG
+import ZCAbsent
+
+--ZC early scenario definition using concepts
+circuit uv oc zc gp gp_ack gn gn_ack = chargeFunc uv oc zc gp gp_ack gn gn_ack
+            <> zcFunc <> zcReact <> uvFunc' <> uvReact' <> initialise zc False
+  where
+    zcFunc = rise zc ~> fall gn
+    zcReact = fall oc ~> rise zc <> rise gp ~> fall zc
+
+    uvFunc' = rise uv ~> rise gp
+    uvReact' = rise zc ~> rise uv <> fall zc ~> fall uv <> rise gp_ack ~> fall uv
+
+\end{minted}
+
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_file}ZCEarly concept specification}
+
+\par\end{centering}
+
+\end{figure}
+
+Notice that this uses \texttt{chargeFunc} without specifying it, but that the third line imports ZCAbsent, the previous file.
+
+The command to translate the first file, \texttt{ZCAbsent}, is similar to our previous example, in Section~\ref{sub:basic}.
+However, to translate the \texttt{ZCEarly} file to an STG, we need to ensure that ther \texttt{ZCAbsent} file is included. This can be done using the following command:
+
+\begin{minted}[fontsize=\normalsize]{bash}
+  $ stack runghc translate/Main.hs -- examples/ZCEarly.hs -i examples/ZCAbsent.hs
+\end{minted}
+
+Providing that the filepath following the ``-i'' points to the file wishing to be imported, this will produce an STG (or FSM if the ``-f'' flag is included).
+
 \section{Using the tool from \noun{Workcraft} \label{sec:workcraft_usage}}
 
-This section will discuss how to use the concepts tool from within \noun{Workcraft}. There are many other features of \noun{Workcraft}, both as part of the STG plug in, some of which I
+This section will discuss how to use \noun{Plato} from within \noun{Workcraft}. There are many other features of \noun{Workcraft}, both as part of the STG plug in, some of which I
  will discuss in the context of concepts here, and as part of other modelling formalisms. More information on these can be found at \url{http://workcraft.org/}.
  
 \subsection{Translating and authoring concepts}
@@ -179,7 +434,7 @@ First of all, \noun{Workcraft} must be started. This can be done by running the 
 \emph{Windows}, this script is named ``\texttt{workcraft.bat}". In \emph{Linux}, it is simply "\texttt{workcraft}". In \emph{OS X}, \noun{Workcraft} can be started instead by double 
 clicking the \noun{Workcraft} icon, which is the app container for the necessary files. 
 
-When workcraft starts, you will be greeted by blank screen, as seen in Figure~\ref{fig:blank_workcraft_screen}.
+When workcraft starts, you will be greeted by a blank screen, as seen in Figure~\ref{fig:blank_workcraft_screen}.
 
 \begin{figure}[H]
 \begin{centering}
@@ -208,7 +463,8 @@ Now, we need to open a new work, specifically a new STG work. Open the "New work
 
 \end{figure}
 
-In this window, select ``\emph{Signal Transition Graph}' and cick the ``OK'' button at the bottom of the window. This will the open a blank workspace in which we can create an STG, which 
+In this window, select ``\emph{Signal Transition Graph}' and cick the ``OK'' button at the bottom of the window. 
+This will the open a blank workspace in which we can create an STG, which 
 will look similar to Figure~\ref{fig:blank_stg_work}.
 
 \begin{figure}[H]
@@ -223,12 +479,12 @@ will look similar to Figure~\ref{fig:blank_stg_work}.
 
 \end{figure}
 
-Now, we can start translating concepts. To do this, first we need to open the concepts dialog.  This is done from the menu bar, by selecting the ``\emph{Conversion}'' menu, and then the 
-``\emph{Translate concepts...}'' option. The concepts dialog will look as shown in Figure~\ref{fig:concepts_dialog_screenshot}.
+Now, we can start translating concepts. To do this, first we need to open the concepts dialog.  This is done from the menu bar, by selecting the ``\emph{Conversion}'' menu,
+ and then the ``\emph{Translate concepts...}'' option. The concepts dialog will look as shown in Figure~\ref{fig:concepts_dialog_screenshot}.
 
 \begin{figure}[H]
 \begin{centering}
-\includegraphics[scale=0.4]{images/concepts_dialog_screenshot}
+\includegraphics[scale=0.5]{images/concepts_dialog_screenshot.png}
 \par\end{centering}
 
 \begin{centering}
@@ -238,41 +494,70 @@ Now, we can start translating concepts. To do this, first we need to open the co
 
 \end{figure}
 
-From within this dialog, one can write their own concepts, from the default template as shown in Figure~\ref{fig:concepts_dialog_screenshot}, or open an existing concepts file, with the  
+\noindent From within this dialog, one can write their own concepts, from the default template as shown in Figure~\ref{fig:concepts_dialog_screenshot}, or open an existing concepts file, with the  
 \emph{.hs} extension. When satisfied with the concepts written, a user can choose to save the file, if not already saved, and then translate these concepts.
 
 \begin{figure}[H]
 \begin{centering}
-\includegraphics[scale=0.4]{images/concepts_dialog_Celement}
+\includegraphics[scale=0.5]{images/concepts_dialog_ZCEarly.png}
 \par\end{centering}
 
 \begin{centering}
-\protect\caption{\label{fig:concepts_dialog_Celement}The concepts dialog with a concept file opened.}
+\protect\caption{\label{fig:concepts_dialog_ZCEarly}The concepts dialog with a concept file opened.}
 
 \par\end{centering}
 
 \end{figure}
 
-Figure~\ref{fig:concepts_dialog_Celement} is the concepts dialog after we have opened the Celement with environment example, named ``\emph{Celement\_with\_env\_1.hs}'', from the 
-concepts tool examples directory. Clicking translate at this point will produce an STG representation of these concepts in the workspace. 
+\noindent Figure~\ref{fig:concepts_dialog_ZCEarly} is the concepts dialog after we have inserted the ZCEarly example, from Figure~\ref{fig:concepts_file}. Clicking translate at this point 
+will cause a translation to fail, because, as we said in Section~\ref{sub:includes}, we need to include the imported ZCAbsent file. At the bottom of this dialog, there is a button called
+ \emph{Included files}. Clicking this opens the dialog as shown in Figure~\ref{fig:include_dialog}.
 
 \begin{figure}[H]
 \begin{centering}
-\includegraphics[scale=0.2]{images/concepts_translated}
+\includegraphics[scale=0.5]{images/include_dialog.png}
 \par\end{centering}
 
 \begin{centering}
-\protect\caption{\label{fig:concepts_translated}The STG produced from translating the concepts.}
+\protect\caption{\label{fig:include_dialog}The include dialog with no included files.}
 
 \par\end{centering}
 
 \end{figure}
 
-The translated concepts will look similar to Figure~\ref{fig:concepts_translated}
+\noindent This currently has no files included. Clicking \emph{Add} will open a file choose, where you can navigate to the chosen file. 
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.5]{images/include_dialog_ZCAbsent.png}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:include_dialog_ZCAbsent}The include dialog with the ZCAsbent file added.}
+
+\par\end{centering}
+
+\end{figure}
+
+\noindent After all desired include files have been added, click OK to return to the concepts translation dialog. This example can be succesfully translated by clicking \emph{Translate}.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.2]{images/concepts_translated.png}
+\par\end{centering}
+
+\begin{centering}
+\protect\caption{\label{fig:concepts_translated}The STG produced from translating the concepts in the example above.}
+
+\par\end{centering}
+
+\end{figure}
+
+\noindent The translated concepts will look similar to Figure~\ref{fig:concepts_translated}
 
 Now, a user can choose to insert more concepts, make changes to this STG, and once they are satisfied with it, can then perform various functions on this STG. One can perform 
-transformations, verifications, simulations and synthesis on this STG using the menus within this workspace now. Any further changes to this STG, based on the results of these operations 
-can be made to this STG or to the concepts file. 
+transformations, verifications, simulations and synthesis on this STG using the menus within this workspace now. Any further changes to this STG, based on the results of these 
+operations can be made to this STG or to the concepts file. 
 
 \subsection{Importing concepts directly}
 
@@ -299,134 +584,25 @@ If any errors are encountered during the translation process, \noun{Workcraft} w
 This usually can tell you with more detail what the issue that is causing the error is, but will ask you to refer to \noun{Workcraft}'s console window for specific line numbers or signals which 
 need to be corrected. 
 These errors will include whether a signal has not been declared as an input or output,
-a signal has not had it's initial state given, or even that the concepts tool has not been installed correctly. 
+a signal has not had it's initial state given, or even that \noun{Plato} has not been installed correctly. 
 
-\section{Writing concepts \label{sec:concepts_layout}}
-
-In this section, we will discuss how to write a concepts file. 
-We will use an example and go through it based on lines, explaining what is necessary. For this example we will be using the same 
-as example as in previous sections, from the examples included with the concepts repo. This is ``\emph{Celement\_with\_env1.hs}''.
-
-\subsection{Concepts file layout}
-
-\begin{figure}[H]
-\begin{centering}
-
-\begin{flushleft}
-$\,\mathsf{module}\, Concept \, \mathsf{where}$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\mathsf{import}\, Tuura.Concept.STG$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\mathsf{circuit}\,a \,b \,c=\mathsf{\,interface}\,<> \mathsf{\, outputRise}<>\,\mathsf{inputFall}\,<>\,\mathsf{outputFall}<>\mathsf{\, inputRise}\,<>\,\mathsf{initialState}$
-
-$\,\,\,\mathsf{where}$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\,\,\,\,\,\mathsf{interface}=\mathsf{inputs}\,[a,b]<>\mathsf{outputs}\,[c]$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\,\,\,\,\,\mathsf{outputRise}=\mathsf{rise} \,a\rightsquigarrow \mathsf{rise} \,c\,<>\, \mathsf{rise} \,b\rightsquigarrow \mathsf{rise} \,c$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\,\,\,\,\,\mathsf{inputFall}=\mathsf{rise} \,c\rightsquigarrow \mathsf{fall} \,a \,<>\, \mathsf{rise} \,c \rightsquigarrow \mathsf{fall} \,b$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\,\,\,\,\,\mathsf{outputFall}=\mathsf{fall} \,a \rightsquigarrow \mathsf{fall} \,c \,<>\, \mathsf{fall} \,b \rightsquigarrow \mathsf{fall} \,c$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\,\,\,\,\,\mathsf{inputRise}=\mathsf{fall} \,c \rightsquigarrow \mathsf{rise} \,a \,<>\, \mathsf{fall} \,c\rightsquigarrow \mathsf{rise} \,b$
-\par\end{flushleft}
-
-\begin{flushleft}
-$\,\,\,\,\,\,\mathsf{initialState}= \, \mathsf{initialise}\,a \, False\,<>\,\mathsf{initialise}\,b \,False\,<> \mathsf{initialise}\,c \,False \,$
-\par\end{flushleft}
-
-\par\end{centering}
-
-\begin{centering}
-\protect\caption{\label{fig:concepts_file}A concepts file}
-
-\par\end{centering}
-
-\end{figure}
-
-The concepts file we will discuss is found in Figure~\ref{fig:concepts_file}. The following describes important information about specific lines.
-
-\begin{description}
-  \item [Line 1]
-  This line must be included in all concept files, as the first line. This ensures that when translating, this is recognised as a concepts file.
-  
-  \item [Line 2] must also remain in all concept files, before any concepts begin to be defined. Importing this module means that the standard operators and existing gates/protocols can be 
-  used. 
-  
-%  \item [Line 6] This is the function definintion of the circuit concepts. This must remain named ``\texttt{circuit}'' in order to be translated. ``\emph{(Eq a)}'' must also remain to be 
-%translated 
-%  correctly. Following this is ``\texttt{a -> }''repeated several times. This needs to be repeated once for each signal in the system. In this example, we have three signals, \texttt{a}, 
-%  \texttt{b} and \texttt{c}, and therefore ``\texttt{a -> }'' appears 3 times in this function definintion. Finally for this line, ``\emph{Circuit Concept} \texttt{a}'' must remain at the end. 
-%This 
-%  is the output of the function and this is what is translated.
-  
-  \item [Line 3] is where a user can begin to define their concepts. ``\texttt{circuit}'' must begin the line, but after this, a user can choose what characters they wish to represent their 
-  signals. In this case, we use \texttt{a}, \texttt{b} and \texttt{c}. Whatever number of signals appear in the system, each one must have a character representation. Following the equals 
-  sign, ``='', we now start defining concepts. Here, any form of concepts can be used; signal-, gate- or protocol-level concepts. Or, a user can define their own concepts below, following 
-  where, and include the names of these concepts here. This can allow for a more concise and easily understood definintion.
-  
-  \item [Line 4] is simply ``\texttt{where}''. This is used to separate the main concept definition from the user-defined concepts. If a concept definition does not need any user defined 
-  concepts, this \texttt{where}, and all following lines can be omitted.
-
-\end{description}
-
-The lines discussed above are the basics of writing concepts. With this information, a user can write concept files, but the following lines can be used for ease-of-use, ease-of-understanding, 
-and reuse. We will some of the following lines in the context of the \emph{Celement\_with\_env1.hs} file, but the information can be applied to any concept files. More information on 
-operators and built-in concepts can be found in Section~\ref{sub:built-in_concepts}.
-
-\begin{description}
-  \item [Line 5] Interface is a concept defined to list the interfaces of the signals, in otherwords, their type. Signals in this can be defined as \emph{inputs} or \emph{outputs}. Every signal
-  must have it's type defined. This can be done using the functions \texttt{inputs[x, y]} and \texttt{outputs[p, q]}. Both of these functions can take a single signal, ``\texttt{[a]}'', or 
-  multiple signals in a comma separated list, ``\texttt{[x, y, z]}''.
-  
-  \item [Line 6] contains a composition of two signal-level concepts. This uses ``\texttt{rise}'' to signify a low-to-high signal transition. ``$\rightsquigarrow$'' signifies causality between two 
-  signal transitions. ``\texttt{<>}'' is the composition operator. This is used to compose any type of concepts. 
-  
-  \item [Line 7] also contains a composition of two signal-level concepts. Some are the same as in Line 11, however, this also features ``\texttt{fall}'', which signifies a high-to-low transition 
-  of the signal this function apllies to, in this case both \texttt{a} and \texttt{b} have included falling transitions.
-  
-  \item [Lines 8 and 9] are further concepts definitions.
-  
-  \item [Line 10] This is the definition of inital states for the signals in this system. This is done by using the ``\texttt{initialise}'' function. This takes a signal, and a Boolean value, and will set 
-  this signal's initial state to 0 if the Boolean value is False, and 1 if the Boolean value is True. This is just one way of defining initial states. 
-
-\end{description}
-
-It is important to note that all defined concepts after Line 8 are part of ``\texttt{circuit}'' definition, on Line 7. These user-defined concepts can be used both within other user-defined 
-concepts, and within the circuit definition to be translated. 
-
-\subsection{Built-in concepts \label{sub:built-in_concepts}}
+\section{Built-in concepts \label{sub:built-in_concepts}}
 
 There are several built-in concepts included in the library, for simple functions, such as setting the initial state, and some standard useful gate- and protocol-level concepts included for 
 ease-of-use. We will list the operators and concepts that are built-in to this tool in this section, and discuss their usage. 
 
-\begin{description}
+\begin{description}[align=left]
   \item [\texttt{rise a}] is used in conjunction with a signal, in this example, \texttt{a}. This is used to show a low-to-high (0 -> 1) transition of a signal.
   
   \item [\texttt{fall a}] the opposite of rise. Used in conjunction with a signal, \texttt{a} here,  is used to show a high-to-low (1 -> 0) transition of a signal.
   
-  \item [$\rightsquigarrow$] is used to show \emph{causality}. This is usually used in conjunction with \texttt{rise} and \texttt{fall}, to show that one signal transition, a cause, will occur 
+  \item [\texttt{$\rightsquigarrow$}] is used to show \emph{causality}. This is usually used in conjunction with \texttt{rise} and \texttt{fall}, to show that one signal transition, a cause, will occur 
    before another signal transition, effect. This doesn't force the effect to occur as soon as the cause has occurred, but simply states that the cause will happen before the effect. It does 
    not suggest timing. One effect signal transition having multiple cause signal transitions creates \emph{AND-causality}. This means that for the effect to occur, both causes must occur. 
    For example: 
-   \[
-   \texttt{rise a $\rightsquigarrow$ rise c <> rise b $\rightsquigarrow$ rise c}
-   \]
+\begin{minted}[fontsize=\normalsize]{haskell}
+                          rise a ~> rise c <> rise b ~> rise c
+\end{minted}
    will form a concept where both \texttt{rise a} and \texttt{rise b} must occur before \texttt{rise c} can occur.
    
    \item [\texttt{\textasciitilde{}|\textasciitilde{}>}] is used to show \emph{OR causality}. (This is \emph{tilde} ``\texttt{|}'' \emph{tilde} ``\texttt{>}''. Hard to show in LaTeX). Similar to 
@@ -471,9 +647,14 @@ in a comma separated list, ``\texttt{[a, b, c]}''.
   
   \item [\texttt{handshake11 a b}] is another protocol-level concept. The behaviours of the signals are the same as in the standard \texttt{handshake} concepts, but this includes initial 
   states for the signals. For this concept, both signals will be initialised to 1, or high.
+
+  \item [\texttt{never [(Transition) a, (Transition) b, ...]}] is a concept used to define lists of signal transitions which cannot all have occured at the same time. \texttt{(Transition)} in this 
+  case will be \texttt{rise} or \texttt{fall}. These lists are used to descripe states of the system which do not hold for the invariant. For example, the concept \\
+  \texttt{never [rise a, rise b]} indicates that signals \texttt{a} and \texttt{b} can never be high at the same time. \noun{Plato} uses this information to determine whether states which
+  are declared as \texttt{never} are reachable or not. 
   
   \item [\texttt{me a b}] A protocol-level concepts. This concept defines \emph{Mutual Exclusion} between two signals. 
-  This means that when one of these signals is high, the other cannot transition high.
+  This means that when one of these signals is high, the other cannot transition high, using the \texttt{never} concept.
   
   \item [\texttt{meElement r1 r2 g1 g2}] is a gate-level concept to apply mutual exclusion. In this case, there are four signals. Two are intputs (\texttt{r1} and \texttt{r2}), the other two 
   are outputs (\texttt{g1} and \texttt{g2}). \texttt{r1} transitioning high will cause \texttt{g1} to go transition high, and this is the same for \texttt{r2} and \texttt{g2}, however,
@@ -488,15 +669,15 @@ in a comma separated list, ``\texttt{[a, b, c]}''.
   
 \end{description}
 
-There are many operators and concepts. With these built-in concepts, we beleive that it is possible to generate STGs of various sizes and complexities using these, and user-defined 
-concepts. 
+\noindent There are many operators and concepts. With these built-in concepts, we beleive that it is possible to generate STGs of various sizes and complexities using these, and user-
+defined concepts. 
 
 We are always aiming to add more concepts to the library. Some that are to be added can be found in Section~\ref{sec:to_be_implemented}. 
 Further suggestions can be added to \href{https://github.com/tuura/concepts/issues}{the issue list in the github repo}, where these can be discussed.
 
 \section{Features to be implemented \label{sec:to_be_implemented}}
 
-Some features which we aim to be stanard functionality of the concepts tool are not implemented yet for various reasons. 
+Some features which we aim to be stanard functionality of \noun{Plato} are not implemented yet for various reasons. 
 These will be displayed here. We will also try and explain a work-around to use until these features are implemented.
 
 Conversations on these features can be found \href{https://github.com/tuura/concepts/issues}{in the list of issues in the github repo}. 
@@ -510,12 +691,13 @@ Currently, when concepts are translated, regardless of the names of signals used
 alphabet, only up to the number of signals in the system. For example, a concept containing 5 signals when translated will produce a STG containing signals '\texttt{A}', '\texttt{B}', 
 '\texttt{C}', '\texttt{D}' and '\texttt{E}'. These signals will be in the order of the signals defined in the \texttt{circuit}. For example, if the circuit definition is:
 
-  \[
-  \texttt{circuit x y z = ...}
-  \]
 
-the signals in the translated STG will be '\texttt{A}' in place of '\texttt{x}', '\texttt{B}' in place of '\texttt{y}' and '\texttt{C}' in place of '\texttt{Z}'.  
-The signal names will not affect their type, or the specification in any-way. \\
+\begin{minted}[fontsize=\normalsize]{haskell}
+                                 circuit x y z = ...
+\end{minted}
+
+\noindent The signals in the translated STG will be '\texttt{A}' in place of '\texttt{x}', '\texttt{B}' in place of '\texttt{y}' and '\texttt{C}' in place of '\texttt{Z}'.  
+The signal names will not affect their type, or the specification in any-way. 
 
 A work-around for this when used in command line is unfortunatley complicated. 
 The \emph{.g} file output by the tool can be edited, replacing, for example, all '\texttt{A}' signals with the desired signal name.
@@ -524,30 +706,7 @@ The signals can have their names changed by selecting them and changing the prop
 Signals with the same name can be selected together (\texttt{shift-left mouse button}) and their name can be edited at once. 
 This, however, is still not as simple as the singal names being included in the translation, and we aim to implement this feature soon. 
 
-\subsection*{User-defined concepts to be reused without re-definition}
-
-Github issue: \url{https://github.com/tuura/concepts/issues/36}\\
-
-It is our aim to allow a user to define their own concepts to build a scenario STG, and then re-use the definition of some of their own concepts without having to re-define any of 
-these concepts, to build another scenario STG, or in any other concept definition. 
-
-This feature has not been implemented in this version of the concepts tool. This may require some new form of definition of these concepts, in order to be reused. It may also require the 
-import of a concept file including the original concept definition. When the feature has been implemented, information on how to use this feature will be included in this manual.  \\
-
-A work-around for this is simply to copy-and-paste the previous concept definition into the new concept file which would require this concept. 
-
 \newpage
-
-%\subsection*{OR-causality}
-%
-%Github issue: \url{https://github.com/tuura/concepts/issues/34}\\
-%
-%OR-causality is useful for signal interactions where at least one of several signal transitions must occur in order for one other signal transition to occur.  
-%With OR-causality, we can then provide some standard gates, such as AND and OR gates. 
-%
-%OR-causality has yet to be implemented, as it requires some specifics changes when translating. We do aim to implement it in the future. \\
-%
-%At this point there is no real work-around to include OR-causality to use with this version of the concepts tool.
 
 \bibliographystyle{unsrt}
 \bibliography{manual_references}
