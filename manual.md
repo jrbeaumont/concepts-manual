@@ -519,7 +519,7 @@ Now, we need to open a new work, specifically a new STG work. Open the
 “New work” dialog using the menu bar, `File -> Create work...`, or by
 pressing `Ctrl-N` (`CMD-N` on *OS X*). This will bring up a menu as seen here:
 
-![The create work window.](http://jrbeaumont.github.io/concepts-manual/images/new_work_screenshot.svg)
+![The create work window.](http://jrbeaumont.github.io/concepts-manual/images/new_work_screenshot.PNG)
 
 In this window, select “*Signal Transition Graph*’ and cick the “OK”
 button at the bottom of the window. This will the open a blank workspace
